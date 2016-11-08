@@ -1,2 +1,3 @@
 # binarysearch
-School project to search the ever-so-popular binary search tree! 
+School projects related to binary search trees, AVL trees, queues, stacks, linked lists, array lists. 
+
