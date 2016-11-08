@@ -1,13 +1,9 @@
-//Erin Walter - Assignment 7 due October 12 2016
-//Running Time for contains method: O(n) best case it is found immediately,
-//worst case it is not found. 
-//Contains method starts on line 62
-//All test passed
-
 /**
  * LinkedList class implements a doubly-linked list.
+ * 
+ * Name: Erin Walter Data Structures Assignment 5 September 29, 2016
  */
-public class MyLinkedList<AnyType> implements Iterable<AnyType> {
+public class MyLinkedList<AnyType extends Comparable<? super AnyType>> implements Iterable<AnyType> {
 	/**
 	 * Construct an empty LinkedList.
 	 */
@@ -54,79 +50,6 @@ public class MyLinkedList<AnyType> implements Iterable<AnyType> {
 	public boolean add(AnyType x) {
 		add(size(), x);
 		return true;
-	}
-
-	/**
-	 * Check each value through the list for current value. Running time is
-	 * O(n).
-	 * 
-	 * @param x
-	 * @return true if the value exists, and false otherwise.
-	 */
-	public boolean contains(AnyType x) {
-		Node<AnyType> currentVal = beginMarker.next;
-		while (currentVal != endMarker) {
-			if (currentVal.data.equals(x)) {
-				return true;
-			} else {
-				currentVal = currentVal.next;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Adds a value x to the first position.
-	 * 
-	 * @param x
-	 *            Running time is constant. θ(1)
-	 */
-	public void addFirst(AnyType x) {
-		add(0, x);
-	}
-
-	/**
-	 * Adds a value x to the last position.
-	 * 
-	 * @param x
-	 *            Running time is θ(1).
-	 */
-	public void addLast(AnyType x) {
-		add(size(), x);
-	}
-
-	/**
-	 * Removes the value at first position. Running time is θ(1) because it is
-	 * constant.
-	 */
-	public void removeFirst() {
-		remove(0);
-	}
-
-	/**
-	 * Removes the value at the last position. Running time is θ(1) because it
-	 * is constant.
-	 */
-	public void removeLast() {
-		remove(size() - 1);
-	}
-
-	/**
-	 * Gets the first element. Running time is θ(1) because it is constant.
-	 * 
-	 * @return
-	 */
-	public AnyType getFirst() {
-		return get(0);
-	}
-
-	/**
-	 * Gets the last element. Running time is θ(1) because it is constant.
-	 * 
-	 * @return
-	 */
-	public AnyType getLast() {
-		return get(size() - 1);
 	}
 
 	/**
@@ -345,50 +268,62 @@ public class MyLinkedList<AnyType> implements Iterable<AnyType> {
 	private int modCount = 0;
 	private Node<AnyType> beginMarker;
 	private Node<AnyType> endMarker;
-}
 
-class TestLinkedList {
-	public static void main(String[] args) {
-		MyLinkedList<Integer> lst = new MyLinkedList<>();
+	private Node<AnyType> findMax() {
 
-		for (int i = 0; i < 10; i++)
-			lst.add(i);
-		for (int i = 20; i < 30; i++)
-			lst.add(0, i);
+		Node<AnyType> node1 = beginMarker.next;
+		Node<AnyType> node2 = beginMarker.next.next;
+		if (isEmpty()) {
+			return null;
+		}
+		while (node2.next != endMarker.next) {
+			if (node2.data.compareTo(node1.data) > 0) {
+				node1 = node2;
+			}
+			node2 = node2.next;
+		}
+		return node1;
+	}
+	//The running time of this program is O(n).
 
-		lst.remove(0);
-		lst.remove(lst.size() - 1);
-
-		System.out.println(lst);
-
-		System.out.println("Is 4 in the list?");
-		System.out.println(lst.contains(4));
-		System.out.println("Get the first value in the list:");
-		System.out.println(lst.getFirst());
-		System.out.println("Get the last value in the list: ");
-		System.out.println(lst.getLast());
-		;
-
-		lst.removeFirst();
-		System.out.println("List with first removed: " + lst);
-		lst.removeLast();
-		System.out.println("List with last removed: " + lst);
-		lst.addFirst(2);
-		System.out.println("List with 2 added first: " + lst);
-		lst.addLast(9);
-		System.out.println("List with 9 added last: " + lst);
+	public AnyType max() {
+		return (isEmpty() ? null : findMax().data);
 	}
 }
 
-// OUTPUT:
-// [ 28 27 26 25 24 23 22 21 20 0 1 2 3 4 5 6 7 8 ]
-// Is 4 in the list?
-// true
-// Get the first value in the list:
-// 28
-// Get the last value in the list:
-// 8
-// List with first removed: [ 27 26 25 24 23 22 21 20 0 1 2 3 4 5 6 7 8 ]
-// List with last removed: [ 27 26 25 24 23 22 21 20 0 1 2 3 4 5 6 7 ]
-// List with 2 added first: [ 2 27 26 25 24 23 22 21 20 0 1 2 3 4 5 6 7 ]
-// List with 9 added last: [ 2 27 26 25 24 23 22 21 20 0 1 2 3 4 5 6 7 9 ]
+class TestLinkedList {
+
+	public static void main(String[] args) {
+		MyLinkedList<Integer> lst = new MyLinkedList<>();
+		for (int i = 0; i < 10; i++)
+			lst.add(i*4);
+		System.out.println(lst);
+		System.out.println("Max is: " + lst.max());
+		
+		MyLinkedList<Integer> test2list = new MyLinkedList<>();
+		for (int i = 10; i > 0; i--)
+			test2list.add(i);
+		System.out.println(test2list);
+		System.out.println("Max is: " + test2list.max());
+		
+		MyLinkedList<Integer> list = new MyLinkedList<>();
+		for (int i = 0; i < 10; i++)
+			list.add(i);
+		System.out.println(list);
+		System.out.println("Max is: " + list.max());
+		
+		// lst.remove(0);
+		// lst.remove(lst.size() - 1);
+
+		MyLinkedList<Integer> empty = new MyLinkedList<>();
+		System.out.println(empty);
+		System.out.println("Max is: " + empty.max());
+	
+		// java.util.Iterator<Integer> itr = lst.iterator();
+		// while (itr.hasNext()) {
+		// itr.next();
+		// itr.remove();
+		// System.out.println(lst);
+		// System.out.println(" hi" + lst.max()
+	}
+}
